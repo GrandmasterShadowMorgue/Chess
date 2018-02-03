@@ -2,6 +2,7 @@ package my.chess.view;
 
 import my.chess.logic.Board;
 import my.chess.logic.Piece;
+import my.chess.logic.V2;
 
 public class Renderer {
 
@@ -23,11 +24,13 @@ public class Renderer {
 
         for (int i = 0; i < board.getLENGTH(); i++) {
 
+            row.append(String.format("%d ", board.getLENGTH() - i));
+
             tile = (i % 2 == 0) ? whiteTile : blackTile;
 
             for (int j = 0; j < board.getWIDTH(); j++) {
 
-                piece = board.getPieceAt(i,j);
+                piece = board.getPieceAt(new V2<>(i,j));
                 pieceSymbol = (piece == null) ? "  " : getUnicodeSymbol(piece);
 
                 row.append(tile).append(pieceSymbol);
@@ -37,6 +40,8 @@ public class Renderer {
 
             row.append(blackTile).append('\n');
         }
+
+        row.append("   A  B  C  D  E  F  G  H");
 
         System.out.println(row);
     }

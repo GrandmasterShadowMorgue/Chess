@@ -25,13 +25,13 @@ public class Board {
         initialiseTiles();
     }
 
-    public void movePiece(int fromX, int fromY, int toX, int toY) {
-        this.tiles[toX][toY] = this.tiles[fromX][fromY];
-        this.tiles[fromX][fromY] = null;
+    public void movePiece(V2<Integer> from, V2<Integer> to) {
+        this.tiles[to.x][to.y] = this.tiles[from.x][from.y];
+        this.tiles[from.x][from.y] = null;
     }
 
-    public Piece getPieceAt(int x, int y) {
-        return this.tiles[x][y];
+    public Piece getPieceAt(V2<Integer> point) {
+        return this.tiles[point.x][point.y];
     }
 
     private void initialiseTiles() {
