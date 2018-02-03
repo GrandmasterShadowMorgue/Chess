@@ -43,24 +43,24 @@ public class Board {
 
     private void addPawns(int row) {
         for (int i = 0; i < WIDTH; i++) {
-            this.tiles[row][i] = new Piece(PAWN, row == 1 ? BLACK : WHITE);
+            this.tiles[row][i] = new Pawn(row == 1 ? BLACK : WHITE, new V2<>(row,i));
         }
     }
 
     private void addPieces(int row) {
         for (int i = 0; i < WIDTH/2; i++) {
             if (i == 0) {
-                this.tiles[row][i] = new Piece(ROOK, row == 0 ? BLACK : WHITE);
-                this.tiles[row][WIDTH-i-1] = new Piece(ROOK, row == 0 ? BLACK : WHITE);
+                this.tiles[row][i] = new Rook(row == 0 ? BLACK : WHITE, new V2<>(row,i));
+                this.tiles[row][WIDTH-i-1] = new Rook(row == 0 ? BLACK : WHITE, new V2<>(row,WIDTH-i-1));
             } else if (i == 1) {
-                this.tiles[row][i] = new Piece(KNIGHT, row == 0 ? BLACK : WHITE);
-                this.tiles[row][WIDTH-i-1] = new Piece(KNIGHT, row == 0 ? BLACK : WHITE);
+                this.tiles[row][i] = new Knight(row == 0 ? BLACK : WHITE, new V2<>(row,i));
+                this.tiles[row][WIDTH-i-1] = new Knight(row == 0 ? BLACK : WHITE, new V2<>(row,WIDTH-i-1));
             } else if (i == 2) {
-                this.tiles[row][i] = new Piece(BISHOP,  row == 0 ? BLACK : WHITE);
-                this.tiles[row][WIDTH-i-1] = new Piece(BISHOP, row == 0 ? BLACK : WHITE);
+                this.tiles[row][i] = new Bishop(row == 0 ? BLACK : WHITE, new V2<>(row,i));
+                this.tiles[row][WIDTH-i-1] = new Bishop(row == 0 ? BLACK : WHITE, new V2<>(row,WIDTH-i-1));
             } else {
-                this.tiles[row][i] = new Piece(QUEEN, row == 0 ? BLACK : WHITE);
-                this.tiles[row][i+1] = new Piece(KING, row == 0 ? BLACK : WHITE);
+                this.tiles[row][i] = new Queen(row == 0 ? BLACK : WHITE, new V2<>(row,i));
+                this.tiles[row][i+1] = new King(row == 0 ? BLACK : WHITE, new V2<>(row,i));
             }
         }
     }

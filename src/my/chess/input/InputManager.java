@@ -7,7 +7,15 @@ import java.util.regex.Pattern;
 
 public class InputManager {
 
-    public V2<V2<Integer>> parseInput(String rawInput) throws InvalidInputException {
+    public InputManager() {
+    }
+
+    public V2<V2<Integer>> parseRegularInput(String rawInput) throws InvalidInputException, CastlingInputException {
+
+        if (rawInput.equals("0-0") || rawInput.equals("0-0-0")) {
+            throw new CastlingInputException("Castling is currently not supported.");
+        }
+
         Pattern p = Pattern.compile("([a-hA-H][1-8]) ([a-hA-H][1-8])");
         Matcher m = p.matcher(rawInput);
 
