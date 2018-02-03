@@ -18,7 +18,7 @@ public class Piece {
         return colour;
     }
 
-    enum Type {
+    public enum Type {
         BISHOP,
         KING,
         KNIGHT,

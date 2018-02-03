@@ -11,6 +11,14 @@ public class Board {
 
     private Piece[][] tiles;
 
+    public int getLENGTH() {
+        return LENGTH;
+    }
+
+    public int getWIDTH() {
+        return WIDTH;
+    }
+
     public Board() {
 
         this.tiles = new Piece[LENGTH][WIDTH];
@@ -43,10 +51,13 @@ public class Board {
         for (int i = 0; i < WIDTH/2; i++) {
             if (i == 0) {
                 this.tiles[row][i] = new Piece(ROOK, row == 0 ? BLACK : WHITE);
+                this.tiles[row][WIDTH-i-1] = new Piece(ROOK, row == 0 ? BLACK : WHITE);
             } else if (i == 1) {
                 this.tiles[row][i] = new Piece(KNIGHT, row == 0 ? BLACK : WHITE);
+                this.tiles[row][WIDTH-i-1] = new Piece(KNIGHT, row == 0 ? BLACK : WHITE);
             } else if (i == 2) {
-                this.tiles[row][i] = new Piece(BISHOP, row == 0 ? BLACK : WHITE);
+                this.tiles[row][i] = new Piece(BISHOP,  row == 0 ? BLACK : WHITE);
+                this.tiles[row][WIDTH-i-1] = new Piece(BISHOP, row == 0 ? BLACK : WHITE);
             } else {
                 this.tiles[row][i] = new Piece(QUEEN, row == 0 ? BLACK : WHITE);
                 this.tiles[row][i+1] = new Piece(KING, row == 0 ? BLACK : WHITE);
