@@ -12,12 +12,11 @@ public final class King extends Piece {
     @Override
     public boolean isValidDestination(V2<Integer> destination) {
         V2<Integer> currentPosition = this.getPosition();
-        boolean isNextX, isNextY, isDifferentPosition;
+        boolean isNextX, isNextY;
 
         isNextX = Math.abs(destination.x - currentPosition.x) <= 1;
         isNextY = Math.abs(destination.y - currentPosition.y) <= 1;
-        isDifferentPosition = !destination.equals(currentPosition);
 
-        return isDifferentPosition && (isNextX && isNextY);
+        return (isNextX && isNextY);
     }
 }

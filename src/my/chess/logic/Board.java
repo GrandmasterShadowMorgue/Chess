@@ -27,6 +27,7 @@ public class Board {
 
     public void movePiece(V2<Integer> from, V2<Integer> to) {
         this.tiles[to.y][to.x] = this.tiles[from.y][from.x];
+        this.tiles[to.y][to.x].setPosition(to);
         this.tiles[from.y][from.x] = null;
     }
 

@@ -30,4 +30,17 @@ public final class Pawn extends Piece {
 
         return isForward && (isValidDouble || isNextSquare);
     }
+
+    public boolean isValidCapturingMove(V2<Integer> destination) {
+        V2<Integer> currentPosition = this.getPosition();
+        boolean isForward;
+
+        if (this.getColour() == BLACK) {
+            isForward = destination.y > currentPosition.y;
+        } else {
+            isForward = destination.y < currentPosition.y;
+        }
+
+        return isForward && (Math.abs(destination.x - currentPosition.x) == 1) && (Math.abs(destination.y - currentPosition.y) == 1);
+    }
 }

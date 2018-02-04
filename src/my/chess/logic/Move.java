@@ -10,6 +10,8 @@ public class Move {
     private final Piece piece;
     private Board board;
 
+    private boolean isCheckmate, isCheck, isLegal, isCapturingMove, isPromotion, isCastling;
+
     public Move(V2<Integer> from, V2<Integer> to, Player player, Piece piece, Board board) {
         this.from = from;
         this.to = to;
@@ -49,9 +51,29 @@ public class Move {
         return false;
     }
 
+    public boolean isCapturingMove() {
+        Piece destPiece = board.getPieceAt(to);
+        return destPiece != null && (player.getColour() != destPiece.getColour());
+    }
+
+    private boolean isDifferentPosition() {
+        return !from.equals(to);
+    }
+
     // TODO: Implement
     private boolean isUnobstructed() {
-        return true;
+        boolean isUnobstructed = true;
+        if ((from.x != to.x) && (from.y != to.y)) {
+            for (int i=1; i <= Math.abs(to.x - from.x); i++) {
+
+            }
+
+        } else if (from.x != to.x) {
+
+        } else {
+
+        }
+        return isUnobstructed;
     }
 
     // TODO: Implement

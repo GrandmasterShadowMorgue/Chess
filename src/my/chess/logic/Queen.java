@@ -12,12 +12,11 @@ public final class Queen extends Piece {
     public boolean isValidDestination(V2<Integer> destination) {
         // Need to check for path obstruction separately
         V2<Integer> currentPosition = this.getPosition();
-        boolean isDiagonal, isDifferentPosition;
+        boolean isDiagonal;
 
-        isDifferentPosition = !destination.equals(currentPosition);
         isDiagonal = Math.abs(destination.x - currentPosition.x) == Math.abs(destination.y - currentPosition.y);
 
-        boolean isBishopMove = isDifferentPosition && isDiagonal;
+        boolean isBishopMove = isDiagonal;
 
         boolean horizontal = (!destination.x.equals(currentPosition.x)) && (destination.y.equals(currentPosition.y));
         boolean vertical = (!destination.y.equals(currentPosition.y)) && (destination.x.equals(currentPosition.x));
