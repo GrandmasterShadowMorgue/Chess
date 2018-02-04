@@ -13,7 +13,7 @@ public class Renderer {
     }
 
     public void update() {
-        String whiteTile = "\033[47m ";
+        String whiteTile = "\033[0;377m ";
         String blackTile = "\033[40m ";
 
         String tile = "";
@@ -31,7 +31,7 @@ public class Renderer {
             for (int j = 0; j < board.getWIDTH(); j++) {
 
                 piece = board.getPieceAt(new V2<>(j,i));
-                pieceSymbol = (piece == null) ? "  " : getUnicodeSymbol(piece);
+                pieceSymbol = (piece == null) ? "\u2002 \u2002" : getUnicodeSymbol(piece);
 
                 row.append(tile).append(pieceSymbol);
 
@@ -41,7 +41,7 @@ public class Renderer {
             row.append(blackTile).append('\n');
         }
 
-        row.append("   A  B  C  D  E  F  G  H");
+        row.append(" \u2002\u2002 A\u2002\u2002 B\u2002\u2002 C\u2002\u2002 D\u2002\u2002 E\u2002\u2002 F\u2002\u2002 G\u2002\u2002 H");
 
         System.out.println(row);
     }
@@ -49,22 +49,6 @@ public class Renderer {
     private String getUnicodeSymbol(Piece piece) {
         switch (piece.getColour()) {
             case BLACK:
-                switch (piece.getType()) {
-                    case BISHOP:
-                        return "\u265D ";
-                    case KING:
-                        return "\u265A ";
-                    case KNIGHT:
-                        return "\u265E ";
-                    case PAWN:
-                        return "\u265F ";
-                    case QUEEN:
-                        return "\u265B ";
-                    case ROOK:
-                        return "\u265C ";
-                }
-                break;
-            case WHITE:
                 switch (piece.getType()) {
                     case BISHOP:
                         return "\u2657 ";
@@ -78,6 +62,22 @@ public class Renderer {
                         return "\u2655 ";
                     case ROOK:
                         return "\u2656 ";
+                }
+                break;
+            case WHITE:
+                switch (piece.getType()) {
+                    case BISHOP:
+                        return "\u265D ";
+                    case KING:
+                        return "\u265A ";
+                    case KNIGHT:
+                        return "\u265E ";
+                    case PAWN:
+                        return "\u265F ";
+                    case QUEEN:
+                        return "\u265B ";
+                    case ROOK:
+                        return "\u265C ";
                 }
                 break;
         }

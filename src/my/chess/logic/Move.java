@@ -34,7 +34,7 @@ public class Move {
 
         isValid &= piece.isValidDestination(to);
 
-        return isValid;
+        return isDifferentPosition() && isValid;
     }
 
     public boolean isValid() {
@@ -60,19 +60,41 @@ public class Move {
         return !from.equals(to);
     }
 
-    // TODO: Implement
     private boolean isUnobstructed() {
         boolean isUnobstructed = true;
-        if ((from.x != to.x) && (from.y != to.y)) {
-            for (int i=1; i <= Math.abs(to.x - from.x); i++) {
+        int dx, dy, length;
+        Piece destPiece;
+        V2<Integer> point;
 
+        length = ((to.x - from.x) != 0) ? Math.abs(to.x - from.x) : Math.abs(to.y - from.y);
+
+        for (int i=1; i <= length; i++) {
+
+            if (!from.x.equals(to.x)) {
+                dx = (to.x > from.x) ? i : -i;
+            } else {
+                dx = 0;
             }
 
-        } else if (from.x != to.x) {
+            if (!from.y.equals(to.y)) {
+                dy = (to.y > from.y) ? i : -i;
+            } else {
+                dy = 0;
+            }
 
-        } else {
+            point = new V2<>(from.x+dx, from.y+dy);
+            destPiece = board.getPieceAt(point);
 
+            // Special case for capturing move (destination piece contains enemy piece, therefore not obstructed)
+            if (destPiece != null) {
+                if (!point.equals(to)) {
+                    isUnobstructed &= board.getPieceAt(new V2<>(from.x+dx, from.y+dy)) == null;
+                } else {
+                    isUnobstructed &= destPiece.getColour() != this.piece.getColour();
+                }
+            }
         }
+
         return isUnobstructed;
     }
 
