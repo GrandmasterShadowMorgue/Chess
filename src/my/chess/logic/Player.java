@@ -6,7 +6,7 @@ public class Player {
     private int points;
 
     public Colour getColour() {
-        return colour;
+        return this.colour;
     }
 
     public Player(Colour colour) {

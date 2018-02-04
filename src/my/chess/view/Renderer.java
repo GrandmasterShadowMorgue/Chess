@@ -30,7 +30,7 @@ public class Renderer {
 
             for (int j = 0; j < board.getWIDTH(); j++) {
 
-                piece = board.getPieceAt(new V2<>(i,j));
+                piece = board.getPieceAt(new V2<>(j,i));
                 pieceSymbol = (piece == null) ? "  " : getUnicodeSymbol(piece);
 
                 row.append(tile).append(pieceSymbol);

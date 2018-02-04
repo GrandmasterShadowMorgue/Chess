@@ -26,12 +26,12 @@ public class Board {
     }
 
     public void movePiece(V2<Integer> from, V2<Integer> to) {
-        this.tiles[to.x][to.y] = this.tiles[from.x][from.y];
-        this.tiles[from.x][from.y] = null;
+        this.tiles[to.y][to.x] = this.tiles[from.y][from.x];
+        this.tiles[from.y][from.x] = null;
     }
 
     public Piece getPieceAt(V2<Integer> point) {
-        return this.tiles[point.x][point.y];
+        return this.tiles[point.y][point.x];
     }
 
     private void initialiseTiles() {
@@ -43,24 +43,24 @@ public class Board {
 
     private void addPawns(int row) {
         for (int i = 0; i < WIDTH; i++) {
-            this.tiles[row][i] = new Pawn(row == 1 ? BLACK : WHITE, new V2<>(row,i));
+            this.tiles[row][i] = new Pawn(row == 1 ? BLACK : WHITE, new V2<>(i,row));
         }
     }
 
     private void addPieces(int row) {
         for (int i = 0; i < WIDTH/2; i++) {
             if (i == 0) {
-                this.tiles[row][i] = new Rook(row == 0 ? BLACK : WHITE, new V2<>(row,i));
-                this.tiles[row][WIDTH-i-1] = new Rook(row == 0 ? BLACK : WHITE, new V2<>(row,WIDTH-i-1));
+                this.tiles[row][i] = new Rook(row == 0 ? BLACK : WHITE, new V2<>(i,row));
+                this.tiles[row][WIDTH-i-1] = new Rook(row == 0 ? BLACK : WHITE, new V2<>(WIDTH-i-1, row));
             } else if (i == 1) {
-                this.tiles[row][i] = new Knight(row == 0 ? BLACK : WHITE, new V2<>(row,i));
-                this.tiles[row][WIDTH-i-1] = new Knight(row == 0 ? BLACK : WHITE, new V2<>(row,WIDTH-i-1));
+                this.tiles[row][i] = new Knight(row == 0 ? BLACK : WHITE, new V2<>(i, row));
+                this.tiles[row][WIDTH-i-1] = new Knight(row == 0 ? BLACK : WHITE, new V2<>(WIDTH-i-1, row));
             } else if (i == 2) {
-                this.tiles[row][i] = new Bishop(row == 0 ? BLACK : WHITE, new V2<>(row,i));
-                this.tiles[row][WIDTH-i-1] = new Bishop(row == 0 ? BLACK : WHITE, new V2<>(row,WIDTH-i-1));
+                this.tiles[row][i] = new Bishop(row == 0 ? BLACK : WHITE, new V2<>(i, row));
+                this.tiles[row][WIDTH-i-1] = new Bishop(row == 0 ? BLACK : WHITE, new V2<>(WIDTH-i-1, row));
             } else {
-                this.tiles[row][i] = new Queen(row == 0 ? BLACK : WHITE, new V2<>(row,i));
-                this.tiles[row][i+1] = new King(row == 0 ? BLACK : WHITE, new V2<>(row,i));
+                this.tiles[row][i] = new Queen(row == 0 ? BLACK : WHITE, new V2<>(i, row));
+                this.tiles[row][i+1] = new King(row == 0 ? BLACK : WHITE, new V2<>(i+1, row));
             }
         }
     }

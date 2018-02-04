@@ -18,6 +18,6 @@ public final class King extends Piece {
         isNextY = Math.abs(destination.y - currentPosition.y) <= 1;
         isDifferentPosition = !destination.equals(currentPosition);
 
-        return isDifferentPosition && (isNextX || isNextY);
+        return isDifferentPosition && (isNextX && isNextY);
     }
 }

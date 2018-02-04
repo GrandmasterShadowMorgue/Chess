@@ -8,7 +8,7 @@ public class Move {
     private final V2<Integer> from, to;
     private final Player player;
     private final Piece piece;
-    private final Board board;
+    private Board board;
 
     public Move(V2<Integer> from, V2<Integer> to, Player player, Piece piece, Board board) {
         this.from = from;
@@ -35,8 +35,28 @@ public class Move {
         return isValid;
     }
 
-    private boolean isUnobstructed() {
+    public boolean isValid() {
+        return validForPlayer() && validForPiece();
+    }
+
+    // TODO: Implement
+    public boolean isLegal() {
+        return true;
+    }
+
+    // TODO: Implement
+    public boolean isCheckmate() {
         return false;
+    }
+
+    // TODO: Implement
+    private boolean isUnobstructed() {
+        return true;
+    }
+
+    // TODO: Implement
+    public String toACN() {
+        return "";
     }
 
 //    private boolean piece
