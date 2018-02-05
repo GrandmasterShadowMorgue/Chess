@@ -80,11 +80,16 @@ public class Controller {
 
             Move move = new Move(rawMove.x, rawMove.y, currentPlayer, this.board.getPieceAt(rawMove.x), board);
 
-            if (move.isValid() && move.isLegal()) {
-                board.movePiece(rawMove.x, rawMove.y);
+            if (move.isValid()) {
+                if (move.isLegal()) {
+                    board.movePiece(rawMove.x, rawMove.y);
+                    return move;
+                } else {
+                    System.out.println("Illegal move. Your king is under check.");
+                }
+            } else {
+                System.out.println("Invalid move.");
             }
-
-            return move;
         }
     }
 
