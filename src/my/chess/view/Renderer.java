@@ -16,6 +16,8 @@ public class Renderer {
         String whiteTile = "\033[0;377m ";
         String blackTile = "\033[40m ";
 
+        String emptyTile = (System.getProperty("os.name").contains("Windows")) ? "\u2002 \u2002" : "  ";
+
         String tile = "";
         StringBuilder row = new StringBuilder();
 
@@ -31,7 +33,7 @@ public class Renderer {
             for (int j = 0; j < board.getWIDTH(); j++) {
 
                 piece = board.getPieceAt(new V2<>(j,i));
-                pieceSymbol = (piece == null) ? "\u2002 \u2002" : getUnicodeSymbol(piece);
+                pieceSymbol = (piece == null) ? emptyTile : getUnicodeSymbol(piece);
 
                 row.append(tile).append(pieceSymbol);
 
@@ -41,7 +43,12 @@ public class Renderer {
             row.append(blackTile).append('\n');
         }
 
-        row.append(" \u2002\u2002 A\u2002\u2002 B\u2002\u2002 C\u2002\u2002 D\u2002\u2002 E\u2002\u2002 F\u2002\u2002 G\u2002\u2002 H");
+        row.append(" ");
+
+
+        for (char i = 'A'; i < 'I'; i++) {
+            row.append(emptyTile + i);
+        }
 
         System.out.println(row);
     }
