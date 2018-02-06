@@ -9,6 +9,19 @@ public class Board {
     private final int LENGTH = 8;
     private final int WIDTH = 8;
 
+    public Board(Piece[][] layout) {
+        tiles = new Piece[LENGTH][WIDTH];
+        for (int i=0; i < this.LENGTH; i++) {
+            for (int j = 0; j < this.WIDTH; j++) {
+                this.tiles[i][j] = layout[i][j];
+            }
+        }
+    }
+
+    public Piece[][] getTiles() {
+        return tiles;
+    }
+
     private Piece[][] tiles;
 
     public int getLENGTH() {

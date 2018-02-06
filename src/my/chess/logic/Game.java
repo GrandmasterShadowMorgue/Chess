@@ -17,4 +17,8 @@ public class Game {
     public void update(Move move) {
         this.moves.add(move);
     }
+
+    public Move getLastMove() {
+        return this.moves.get(this.moves.size()-1);
+    }
 }
