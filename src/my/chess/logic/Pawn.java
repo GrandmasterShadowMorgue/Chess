@@ -20,7 +20,7 @@ public final class Pawn extends Piece {
         isValidDouble = Math.abs(destination.y - currentPosition.y) == 2;
         isNextSquare = Math.abs(destination.y - currentPosition.y) == 1;
 
-        if (this.getColour() == BLACK) {
+        if (this.colour == BLACK) {
             isForward &= destination.y > currentPosition.y;
             isValidDouble &= currentPosition.y == 1;
         } else {
@@ -35,7 +35,7 @@ public final class Pawn extends Piece {
         V2<Integer> currentPosition = this.getPosition();
         boolean isForward;
 
-        if (this.getColour() == BLACK) {
+        if (this.colour == BLACK) {
             isForward = destination.y > currentPosition.y;
         } else {
             isForward = destination.y < currentPosition.y;

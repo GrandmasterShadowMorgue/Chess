@@ -24,13 +24,13 @@ public class Renderer {
         Piece piece;
         String pieceSymbol;
 
-        for (int i = 0; i < board.getLENGTH(); i++) {
+        for (int i = 0; i < board.LENGTH; i++) {
 
-            row.append(String.format("%d ", board.getLENGTH() - i));
+            row.append(String.format("%d ", board.LENGTH - i));
 
             tile = (i % 2 == 0) ? whiteTile : blackTile;
 
-            for (int j = 0; j < board.getWIDTH(); j++) {
+            for (int j = 0; j < board.WIDTH; j++) {
 
                 piece = board.getPieceAt(new V2<>(j,i));
                 pieceSymbol = (piece == null) ? emptyTile : getUnicodeSymbol(piece);
@@ -54,9 +54,9 @@ public class Renderer {
     }
 
     private String getUnicodeSymbol(Piece piece) {
-        switch (piece.getColour()) {
+        switch (piece.colour) {
             case BLACK:
-                switch (piece.getType()) {
+                switch (piece.type) {
                     case BISHOP:
                         return "\u2657 ";
                     case KING:
@@ -72,7 +72,7 @@ public class Renderer {
                 }
                 break;
             case WHITE:
-                switch (piece.getType()) {
+                switch (piece.type) {
                     case BISHOP:
                         return "\u265D ";
                     case KING:

@@ -64,14 +64,14 @@ public class Move {
     }
 
     private boolean validForPlayer() {
-        return this.player.getColour() == this.piece.getColour();
+        return this.player.colour == this.piece.colour;
     }
 
     private boolean validForPiece() {
 
         boolean isValid = true;
 
-        if (this.isCapturingMove && this.piece.getType() == PAWN) {
+        if (this.isCapturingMove && this.piece.type == PAWN) {
             isValid = ((Pawn) piece).isValidCapturingMove(to);
         } else {
             isValid &= piece.isValidDestination(to);

@@ -2,12 +2,8 @@ package my.chess.logic;
 
 public class Player {
 
-    private final Colour colour;
+    public final Colour colour;
     private int points;
-
-    public Colour getColour() {
-        return this.colour;
-    }
 
     public Player(Colour colour) {
         this.colour = colour;

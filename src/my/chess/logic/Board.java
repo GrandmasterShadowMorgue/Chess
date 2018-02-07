@@ -6,14 +6,38 @@ import static my.chess.logic.Piece.Type.*;
 
 public class Board {
 
-    private final int LENGTH = 8;
-    private final int WIDTH = 8;
+    public final int LENGTH = 8;
+    public final int WIDTH = 8;
 
     public Board(Piece[][] layout) {
-        tiles = new Piece[LENGTH][WIDTH];
+        this.tiles = new Piece[LENGTH][WIDTH];
         for (int i=0; i < this.LENGTH; i++) {
             for (int j = 0; j < this.WIDTH; j++) {
-                this.tiles[i][j] = layout[i][j];
+                Piece piece = layout[i][j];
+                Piece newpiece = null;
+                if (piece != null) {
+                    switch (piece.type) {
+                        case KING:
+                            newpiece = new King(piece.colour, piece.getPosition());
+                            break;
+                        case PAWN:
+                            newpiece = new Pawn(piece.colour, piece.getPosition());
+                            break;
+                        case KNIGHT:
+                            newpiece = new Knight(piece.colour, piece.getPosition());
+                            break;
+                        case ROOK:
+                            newpiece = new Rook(piece.colour, piece.getPosition());
+                            break;
+                        case QUEEN:
+                            newpiece = new Queen(piece.colour, piece.getPosition());
+                            break;
+                        case BISHOP:
+                            newpiece = new Bishop(piece.colour, piece.getPosition());
+                            break;
+                    }
+                }
+                this.tiles[i][j] = newpiece;
             }
         }
     }
@@ -23,14 +47,6 @@ public class Board {
     }
 
     private Piece[][] tiles;
-
-    public int getLENGTH() {
-        return LENGTH;
-    }
-
-    public int getWIDTH() {
-        return WIDTH;
-    }
 
     public Board() {
 

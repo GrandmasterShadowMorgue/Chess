@@ -46,7 +46,7 @@ public class Controller {
 
         while (!isGameOver) {
 
-            System.out.println(currentPlayer.getColour().toString() + " to move.\n");
+            System.out.println(currentPlayer.colour.toString() + " to move.\n");
 
             renderer.update();
 
@@ -56,8 +56,10 @@ public class Controller {
 
             isGameOver = move.isCheckmate(); // or stalemate / draw rules
 
-            currentPlayer = (currentPlayer.getColour() == WHITE) ? blackPlayer : whitePlayer;
+            currentPlayer = (currentPlayer.colour == WHITE) ? blackPlayer : whitePlayer;
         }
+
+        renderer.update();
 
         promptRestart();
     }
@@ -99,32 +101,32 @@ public class Controller {
 
         Piece piece = move.getPiece();
 
-        boolean isValid = move.isValid();
-
-        if (isCapturingMove(move)) {
+        if (isCapturingMove(move, this.board)) {
             move.setCapturingMove(true);
         }
 
-        if (piece.getType() != Piece.Type.KNIGHT && piece.getType() != Piece.Type.PAWN) {
+        boolean isValid = move.isValid();
+
+        if (piece.type != Piece.Type.KNIGHT && piece.type != Piece.Type.PAWN) {
             isValid &= isUnobstructed(move, this.board);
         } else {
             Piece destPiece = this.board.getPieceAt(move.getTo());
             if (destPiece != null) {
-                isValid &= destPiece.getColour() != piece.getColour();
+                isValid &= destPiece.colour != piece.colour;
             }
         }
 
         if (isValid) {
 
-            if (isLegal(move)) {
-                if (isCheck(move)) {
-//                    if (isCheckmate(move)) {
-//                        move.setCheckmate(true);
-//                        System.out.println("CHECKMATE!");
-//                    } else {
+            if (isLegal(move, this.board, this.currentPlayer.colour)) {
+                if (isCheck(move, this.board)) {
+                    if (isCheckmate(move)) {
+                        move.setCheckmate(true);
+                        System.out.println("CHECK...");
+                    } else {
                         move.setCheck(true);
                         System.out.println("CHECK!");
-//                    }
+                    }
                 }
                 board.movePiece(move.getFrom(), move.getTo());
             } else {
@@ -139,7 +141,8 @@ public class Controller {
     public boolean promptRestart() {
         Move lastMove = this.game.getLastMove();
         if (lastMove.isCheckmate()) {
-            String winMessage = lastMove.getPlayer().getColour() == WHITE ? "White wins!" : "Black wins";
+            System.out.println("and MATE!");
+            String winMessage = lastMove.getPlayer().colour == WHITE ? "White wins!" : "Black wins";
             System.out.println(winMessage);
         }
 
@@ -157,7 +160,7 @@ public class Controller {
         return input.equalsIgnoreCase("Y");
     }
 
-    private boolean isUnobstructed(Move move, Board boardy) {
+    private boolean isUnobstructed(Move move, Board board) {
         boolean isUnobstructed = true;
         int dx, dy, length;
         Piece destPiece;
@@ -180,14 +183,14 @@ public class Controller {
             }
 
             point = new V2<>(move.getFrom().x+dx, move.getFrom().y+dy);
-            destPiece = boardy.getPieceAt(point);
+            destPiece = board.getPieceAt(point);
 
             // Special case for capturing move (destination piece contains enemy piece, therefore not obstructed)
             if (destPiece != null) {
                 if (!point.equals(move.getTo())) {
-                    isUnobstructed &= boardy.getPieceAt(new V2<>(move.getFrom().x+dx, move.getFrom().y+dy)) == null;
+                    isUnobstructed &= board.getPieceAt(new V2<>(move.getFrom().x+dx, move.getFrom().y+dy)) == null;
                 } else {
-                    isUnobstructed &= destPiece.getColour() != move.getPiece().getColour();
+                    isUnobstructed &= destPiece.colour != move.getPiece().colour;
                 }
             }
         }
@@ -195,16 +198,16 @@ public class Controller {
         return isUnobstructed;
     }
 
-    private boolean isLegal(Move move) {
-        Board updatedBoard = new Board(this.board.getTiles());
+    private boolean isLegal(Move move, Board board, Colour playerColour) {
+        Board updatedBoard = new Board(board.getTiles());
 
         updatedBoard.movePiece(move.getFrom(), move.getTo());
 
-        Player enemy = this.currentPlayer.getColour() == WHITE ? this.blackPlayer : this.whitePlayer;
-        Colour oppositeColour = this.currentPlayer.getColour() == WHITE ? BLACK : WHITE;
-        List<Piece> enemyPieces = getAllPieces(oppositeColour);
+        Player enemy = playerColour == WHITE ? this.blackPlayer : this.whitePlayer;
+        Colour oppositeColour = playerColour == WHITE ? BLACK : WHITE;
+        List<Piece> enemyPieces = getAllPieces(oppositeColour, updatedBoard);
 
-        V2<Integer> kingPosition = getKingPosition(this.currentPlayer.getColour());
+        V2<Integer> kingPosition = getKingPosition(playerColour, updatedBoard);
 
         boolean isUnderCheck = false;
 
@@ -213,8 +216,13 @@ public class Controller {
             Move possibleCapturingMove = new Move(piece.getPosition(), kingPosition, enemy, piece);
             possibleCapturingMove.setCapturingMove(true);
             boolean obstructed = true;
-            if (piece.getType() != Piece.Type.KNIGHT && piece.getType() != Piece.Type.PAWN) {
+            if (piece.type != Piece.Type.KNIGHT && piece.type != Piece.Type.PAWN) {
                 obstructed = isUnobstructed(possibleCapturingMove, updatedBoard);
+            } else {
+                Piece destPiece = board.getPieceAt(move.getTo());
+                if (destPiece != null) {
+                    obstructed = destPiece.colour != piece.colour;
+                }
             }
             isUnderCheck |= possibleCapturingMove.isValid() && obstructed;
         }
@@ -222,12 +230,12 @@ public class Controller {
         return !isUnderCheck;
     }
 
-    private boolean isCheck(Move move) {
-        Board updatedBoard = new Board(this.board.getTiles());
+    private boolean isCheck(Move move, Board board) {
+        Board updatedBoard = new Board(board.getTiles());
         updatedBoard.movePiece(move.getFrom(), move.getTo());
-        List<Piece> playerPieces = getAllPieces(this.currentPlayer.getColour());
-        Colour oppositeColour = this.currentPlayer.getColour() == WHITE ? BLACK : WHITE;
-        V2<Integer> kingPosition = getKingPosition(oppositeColour);
+        List<Piece> playerPieces = getAllPieces(this.currentPlayer.colour, updatedBoard);
+        Colour oppositeColour = this.currentPlayer.colour == WHITE ? BLACK : WHITE;
+        V2<Integer> kingPosition = getKingPosition(oppositeColour, updatedBoard);
 
         boolean isCheck = false;
 
@@ -235,8 +243,13 @@ public class Controller {
             Move possibleCapturingMove = new Move(piece.getPosition(), kingPosition, move.getPlayer(), piece);
             possibleCapturingMove.setCapturingMove(true);
             boolean obstructed = true;
-            if (piece.getType() != Piece.Type.KNIGHT && piece.getType() != Piece.Type.PAWN) {
+            if (piece.type != Piece.Type.KNIGHT && piece.type != Piece.Type.PAWN) {
                 obstructed = isUnobstructed(possibleCapturingMove, updatedBoard);
+            } else {
+                Piece destPiece = board.getPieceAt(move.getTo());
+                if (destPiece != null) {
+                    obstructed = destPiece.colour != piece.colour;
+                }
             }
             isCheck |= possibleCapturingMove.isValid() && obstructed;
         }
@@ -244,34 +257,119 @@ public class Controller {
         return isCheck;
     }
 
-    // TODO: Finish implementation
-//    private boolean isCheckmate(Move move) {
-//        Board updatedBoard = new Board(this.board.getTiles());
-//        updatedBoard.movePiece(move.getFrom(), move.getTo());
-//        Player enemy = this.currentPlayer.getColour() == WHITE ? this.blackPlayer : this.whitePlayer;
-//        Colour oppositeColour = this.currentPlayer.getColour() == WHITE ? BLACK : WHITE;
-//        List<Piece> enemyPieces = getAllPieces(oppositeColour);
-//
-//        // Can capture attacking piece(s)?
-//        // Can block attacking piece(s)?
-//        // Can move king to safety?
-//    }
+    private boolean isCheckmate(Move move) {
+        Board updatedBoard = new Board(this.board.getTiles());
+        updatedBoard.movePiece(move.getFrom(), move.getTo());
+        Player enemy = this.currentPlayer.colour == WHITE ? this.blackPlayer : this.whitePlayer;
+        Colour oppositeColour = this.currentPlayer.colour == WHITE ? BLACK : WHITE;
+        V2<Integer> kingPosition = getKingPosition(oppositeColour, updatedBoard);
+        List<Piece> enemyPieces = getAllPieces(oppositeColour, updatedBoard);
+        enemyPieces.removeIf(p -> p.type == Piece.Type.KING);
+        List<Piece> playerPieces = getAllPieces(this.currentPlayer.colour, updatedBoard);
+        List<Piece> checkPieces = new ArrayList<>();
 
-    // TODO: Implement (if needed)
-//    private List<Move> getAllPossibleMoves(List<Piece> pieces) {
-//        for (Piece piece :
-//                pieces) {
-//
-//        }
-//    }
+        for (Piece piece :
+                playerPieces) {
+            Move possibleCapturingMove = new Move(piece.getPosition(), kingPosition, this.currentPlayer, piece);
+            possibleCapturingMove.setCapturingMove(true);
+            boolean obstructed = true;
+            if (piece.type != Piece.Type.KNIGHT && piece.type != Piece.Type.PAWN) {
+                obstructed = isUnobstructed(possibleCapturingMove, updatedBoard);
+            } else {
+                Piece destPiece = updatedBoard.getPieceAt(move.getTo());
+                if (destPiece != null) {
+                    obstructed = destPiece.colour != piece.colour;
+                }
+            }
 
-    private List<Piece> getAllPieces(Colour colour) {
+            if (possibleCapturingMove.isValid() && obstructed) {
+                checkPieces.add(piece);
+            }
+        }
+
+        // Can capture attacking piece?
+        if (checkPieces.size() == 1) {
+            Piece checkPiece = checkPieces.get(0);
+            for (Piece piece :
+                    enemyPieces) {
+                Move possibleCapturingMove = new Move(piece.getPosition(), checkPiece.getPosition(), enemy, piece);
+                possibleCapturingMove.setCapturingMove(true);
+                boolean obstructed = true;
+                if (piece.type != Piece.Type.KNIGHT && piece.type != Piece.Type.PAWN) {
+                    obstructed = isUnobstructed(possibleCapturingMove, updatedBoard);
+                } else {
+                    Piece destPiece = updatedBoard.getPieceAt(move.getTo());
+                    if (destPiece != null) {
+                        obstructed = destPiece.colour != piece.colour;
+                    }
+                }
+                if (possibleCapturingMove.isValid() && obstructed) return false;
+            }
+
+            // Can block attacking piece(s)?
+            if (checkPiece.type != Piece.Type.KNIGHT && checkPiece.type != Piece.Type.PAWN){
+                Move possibleBlockingMove;
+                int dx, dy;
+
+                int length = ((kingPosition.x - checkPiece.getPosition().x) != 0) ? Math.abs(kingPosition.x - checkPiece.getPosition().x) : Math.abs(kingPosition.y - checkPiece.getPosition().y);
+                for (int i=1; i <= length; i++) {
+
+                    if (!kingPosition.x.equals(checkPiece.getPosition().x)) {
+                        dx = (checkPiece.getPosition().x < kingPosition.x) ? i : -i;
+                    } else {
+                        dx = 0;
+                    }
+
+                    if (!kingPosition.y.equals(checkPiece.getPosition().y)) {
+                        dy = (checkPiece.getPosition().y < kingPosition.y) ? i : -i;
+                    } else {
+                        dy = 0;
+                    }
+
+                    V2<Integer> blockingDestination = new V2<>(checkPiece.getPosition().x+dx, checkPiece.getPosition().y+dy);
+
+                    for (Piece piece :
+                            enemyPieces) {
+                        possibleBlockingMove = new Move(piece.getPosition(), blockingDestination, enemy, piece);
+                        boolean obstructed = true;
+                        if (piece.type != Piece.Type.KNIGHT && piece.type != Piece.Type.PAWN) {
+                            obstructed = isUnobstructed(possibleBlockingMove, updatedBoard);
+                        } else {
+                            Piece destPiece = updatedBoard.getPieceAt(move.getTo());
+                            if (destPiece != null) {
+                                obstructed = destPiece.colour != piece.colour;
+                            }
+                        }
+                        if (possibleBlockingMove.isValid() && obstructed) return false;
+                    }
+                }
+            }
+        }
+        // Can move king to safety?
+        Piece enemyKing = updatedBoard.getPieceAt(kingPosition);
+        for (int dx = -1; dx < 2; dx++) {
+            for (int dy = -1; dy < 2; dy++) {
+                if (!(dx == 0 && dy == 0)) {
+                    V2<Integer> possibleDest = new V2<>(kingPosition.x + dx, kingPosition.y + dy);
+                    if ((possibleDest.x > -1 && possibleDest.y > -1) && (possibleDest.x < updatedBoard.LENGTH && possibleDest.y < updatedBoard.WIDTH)) {
+                        Move kingMove = new Move(kingPosition, possibleDest, enemy, enemyKing);
+                        if (isUnobstructed(kingMove, updatedBoard) && isLegal(kingMove, updatedBoard, enemy.colour)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private List<Piece> getAllPieces(Colour colour, Board board) {
         List<Piece> pieces = new ArrayList<>();
         Piece piece;
-        for (int i=0; i < this.board.getLENGTH(); i++) {
-            for (int j=0; j< this.board.getWIDTH(); j++) {
-                piece = this.board.getPieceAt(new V2<>(i, j));
-                if (piece != null && (piece.getColour() == colour)) {
+        for (int i=0; i < board.LENGTH; i++) {
+            for (int j=0; j< board.WIDTH; j++) {
+                piece = board.getPieceAt(new V2<>(i, j));
+                if (piece != null && (piece.colour == colour)) {
                     pieces.add(piece);
                 }
             }
@@ -280,12 +378,12 @@ public class Controller {
         return pieces;
     }
 
-    private V2<Integer> getKingPosition(Colour colour) {
+    private V2<Integer> getKingPosition(Colour colour, Board board) {
         Piece piece;
-        for (int i=0; i < this.board.getLENGTH(); i++) {
-            for (int j=0; j< this.board.getWIDTH(); j++) {
-                piece = this.board.getPieceAt(new V2<>(i, j));
-                if (piece != null && (piece.getType() == Piece.Type.KING) && (piece.getColour() == colour)) {
+        for (int i=0; i < board.LENGTH; i++) {
+            for (int j=0; j< board.WIDTH; j++) {
+                piece = board.getPieceAt(new V2<>(i, j));
+                if (piece != null && (piece.type == Piece.Type.KING) && (piece.colour == colour)) {
                     return piece.getPosition();
                 }
             }
@@ -293,9 +391,9 @@ public class Controller {
         return null;
     }
 
-    private boolean isCapturingMove(Move move) {
+    private boolean isCapturingMove(Move move, Board board) {
         Piece destPiece = board.getPieceAt(move.getTo());
 
-        return destPiece != null && (move.getPlayer().getColour() != destPiece.getColour());
+        return destPiece != null && (move.getPlayer().colour != destPiece.colour);
     }
 }
