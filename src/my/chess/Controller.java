@@ -141,7 +141,7 @@ public class Controller {
     public boolean promptRestart() {
         Move lastMove = this.game.getLastMove();
         if (lastMove.isCheckmate()) {
-            System.out.println("and MATE!");
+            System.out.println("...MATE!");
             String winMessage = lastMove.getPlayer().colour == WHITE ? "White wins!" : "Black wins";
             System.out.println(winMessage);
         }
@@ -335,7 +335,7 @@ public class Controller {
                         if (piece.type != Piece.Type.KNIGHT && piece.type != Piece.Type.PAWN) {
                             obstructed = isUnobstructed(possibleBlockingMove, updatedBoard);
                         } else {
-                            Piece destPiece = updatedBoard.getPieceAt(move.getTo());
+                            Piece destPiece = updatedBoard.getPieceAt(blockingDestination);
                             if (destPiece != null) {
                                 obstructed = destPiece.colour != piece.colour;
                             }
